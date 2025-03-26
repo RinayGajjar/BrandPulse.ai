@@ -51,6 +51,7 @@ def init_streamlit():
         --accent: #c68f65;
         --accent-dark: #8b4513;
         --accent-light: #d4a76a;
+        --input-bg: #e9ecef;
     }
     
     /* Theme-adaptive styles */
@@ -92,7 +93,21 @@ def init_streamlit():
     
     /* Input Fields */
     .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
+    .stNumberInput > div > div > input {
+        background-color: var(--input-bg) !important;
+        color: #333333 !important;
+        border: 2px solid var(--accent-dark) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Placeholder text styling */
+    .stTextInput > div > div > input::placeholder,
+    .stNumberInput > div > div > input::placeholder {
+        color: #6c757d !important;
+        opacity: 1 !important;
+    }
+    
+    /* Keep dropdown styling unchanged */
     .stSelectbox > div > div {
         background-color: rgba(74, 52, 40, 0.1) !important;
         color: var(--dark-text) !important;
@@ -101,7 +116,12 @@ def init_streamlit():
     }
     
     [data-theme="light"] .stTextInput > div > div > input,
-    [data-theme="light"] .stNumberInput > div > div > input,
+    [data-theme="light"] .stNumberInput > div > div > input {
+        background-color: var(--input-bg) !important;
+        color: #333333 !important;
+        border-color: var(--accent) !important;
+    }
+    
     [data-theme="light"] .stSelectbox > div > div {
         background-color: rgba(255, 255, 255, 0.9) !important;
         color: var(--light-text) !important;
@@ -114,11 +134,38 @@ def init_streamlit():
         color: white !important;
         border: none !important;
         transition: all 0.3s ease !important;
+        position: relative; /* For animation positioning */
+    }
+    
+    /* Button hover state */
+    .stButton > button:hover {
+        background: linear-gradient(135deg, var(--accent-dark), var(--accent)) !important;
+        transform: scale(1.02); /* Slight scale up on hover */
+    }
+    
+    /* Button active/click animation */
+    .stButton > button:active {
+        transform: scale(0.95) !important; /* Slight scale down on click */
+        background: linear-gradient(135deg, var(--accent-dark), #7a3d11) !important; /* Darker shade on click */
+        transition: all 0.1s ease !important; /* Faster transition for click */
     }
     
     [data-theme="light"] .stButton > button {
         background: linear-gradient(135deg, var(--accent-light), var(--accent)) !important;
         color: var(--light-text) !important;
+    }
+    
+    /* Light theme button hover state */
+    [data-theme="light"] .stButton > button:hover {
+        background: linear-gradient(135deg, var(--accent), var(--accent-light)) !important;
+        transform: scale(1.02);
+    }
+    
+    /* Light theme button active/click animation */
+    [data-theme="light"] .stButton > button:active {
+        transform: scale(0.95) !important;
+        background: linear-gradient(135deg, var(--accent), #a6744e) !important; /* Darker shade for light theme */
+        transition: all 0.1s ease !important;
     }
     
     /* Metric Boxes */
@@ -181,13 +228,13 @@ def init_streamlit():
     .stTabs {
         margin-top: 20px;
     }
-
+    
     .stTabs [data-baseweb="tab-list"] {
         gap: 0 !important;
         border-bottom: 2px solid rgba(52, 152, 219, 0.2);
         background: transparent !important;
     }
-
+    
     .stTabs [data-baseweb="tab"] {
         padding: 12px 24px !important;
         font-weight: 500 !important;
@@ -198,39 +245,39 @@ def init_streamlit():
         position: relative;
         bottom: -2px;
     }
-
+    
     .stTabs [data-baseweb="tab"]:hover {
         color: #3498DB !important;
     }
-
+    
     .stTabs [aria-selected="true"] {
         color: #3498DB !important;
         border-bottom: 2px solid #3498DB !important;
         background: transparent !important;
     }
-
+    
     /* Clean Tool Selection Area */
     .tool-selection {
         padding: 20px 0;
         margin-bottom: 20px;
         background: transparent;
     }
-
+    
     /* Remove glass effect from content area */
     .tab-content {
         background: transparent;
         padding: 20px 0;
     }
-
+    
     /* Light theme adjustments */
     [data-theme="light"] .stTabs [data-baseweb="tab"] {
         color: #2C3E50 !important;
     }
-
+    
     [data-theme="light"] .stTabs [aria-selected="true"] {
         color: #3498DB !important;
     }
-
+    
     /* Remove any remaining blur effects */
     .stTabs [data-baseweb="tab-panel"] {
         backdrop-filter: none !important;
@@ -249,7 +296,7 @@ class MarketingAgencyAutomation:
     def _get_completion(self, prompt: str) -> str:
         try:
             completion = self.groq.chat.completions.create(
-                model="mistral-saba-24b",
+                model="llama-3.3-70b-versatile",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=1000
@@ -466,7 +513,7 @@ def main():
                             st.write(results['recommendations'])
 
         elif tool == "Competitor Watchdog":
-            num_competitors = st.number_input("Number of competitors:", min_value=1, max_value=5, value=1, key="ind_comp_num")
+            num_competitors = st.number_input("Number of competitors:", min_value=1, max_value=10, value=1, key="ind_comp_num")
             keywords = st.text_input("Keywords to track:", placeholder="e.g., keyword1, keyword2", key="ind_comp_keywords")
             competitors = []
             cols = st.columns(2)
