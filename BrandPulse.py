@@ -249,7 +249,7 @@ class MarketingAgencyAutomation:
     def _get_completion(self, prompt: str) -> str:
         try:
             completion = self.groq.chat.completions.create(
-                model="mistral-saba-24b",
+                model="llama-3.3-70b-versatile",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=1000
