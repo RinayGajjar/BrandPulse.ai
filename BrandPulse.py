@@ -51,6 +51,7 @@ def init_streamlit():
         --accent: #c68f65;
         --accent-dark: #8b4513;
         --accent-light: #d4a76a;
+        --input-bg: #e9ecef;  /* Softer gray background instead of stark white */
     }
     
     /* Theme-adaptive styles */
@@ -92,7 +93,21 @@ def init_streamlit():
     
     /* Input Fields */
     .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
+    .stNumberInput > div > div > input {
+        background-color: var(--input-bg) !important;
+        color: #333333 !important;
+        border: 2px solid var(--accent-dark) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Placeholder text styling */
+    .stTextInput > div > div > input::placeholder,
+    .stNumberInput > div > div > input::placeholder {
+        color: #6c757d !important;  /* Medium gray for placeholder */
+        opacity: 1 !important;
+    }
+    
+    /* Keep dropdown styling unchanged */
     .stSelectbox > div > div {
         background-color: rgba(74, 52, 40, 0.1) !important;
         color: var(--dark-text) !important;
@@ -101,7 +116,12 @@ def init_streamlit():
     }
     
     [data-theme="light"] .stTextInput > div > div > input,
-    [data-theme="light"] .stNumberInput > div > div > input,
+    [data-theme="light"] .stNumberInput > div > div > input {
+        background-color: var(--input-bg) !important;
+        color: #333333 !important;
+        border-color: var(--accent) !important;
+    }
+    
     [data-theme="light"] .stSelectbox > div > div {
         background-color: rgba(255, 255, 255, 0.9) !important;
         color: var(--light-text) !important;
@@ -466,7 +486,7 @@ def main():
                             st.write(results['recommendations'])
 
         elif tool == "Competitor Watchdog":
-            num_competitors = st.number_input("Number of competitors:", min_value=1, max_value=5, value=1, key="ind_comp_num")
+            num_competitors = st.number_input("Number of competitors:", min_value=1, max_value=10, value=1, key="ind_comp_num")
             keywords = st.text_input("Keywords to track:", placeholder="e.g., keyword1, keyword2", key="ind_comp_keywords")
             competitors = []
             cols = st.columns(2)
